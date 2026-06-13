@@ -72,9 +72,10 @@ if uploaded_file is not None:
 
         csv = df.to_csv(index=False)
 
-        st.download_button(
-            "Download Detection CSV",
-            csv,
-            "detection_results.csv",
-            "text/csv"
-        )
+    st.download_button(
+"Download Detection CSV",
+csv,
+"detection_results.csv",
+"text/csv",
+key="download_csv"
+)
