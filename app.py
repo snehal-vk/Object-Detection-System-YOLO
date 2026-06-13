@@ -30,26 +30,37 @@ if uploaded_file is not None:
     st.write("File uploaded successfully!")
 
     if st.button("Detect Objects"):
-        results = model(temp_path, save=True)
 
-        st.success("Detection completed!")
+     results = model(temp_path, save=True)
 
-        detection_data = []
+    # Image Detection
+    if file_suffix.lower() in ["jpg", "jpeg", "png"]:
+        result_img = results[0].plot()
+        st.image(result_img, caption="Detected Image", use_container_width=True)
 
-        for box in results[0].boxes:
-            class_id = int(box.cls[0])
-            object_name = model.names[class_id]
-            confidence = float(box.conf[0])
-            x1, y1, x2, y2 = box.xyxy[0].tolist()
+    # Video Detection
+    elif file_suffix.lower() in ["mp4", "avi", "mov"]:
+        st.info("Video detection completed successfully!")
+        st.video(temp_path)
 
-            detection_data.append([
-                object_name,
-                round(confidence, 2),
-                round(x1, 2),
-                round(y1, 2),
-                round(x2, 2),
-                round(y2, 2)
-            ])
+    st.success("Detection completed!")
+
+    detection_data = []
+
+    for box in results[0].boxes:
+        class_id = int(box.cls[0])
+        object_name = model.names[class_id]
+        confidence = float(box.conf[0])
+        x1, y1, x2, y2 = box.xyxy[0].tolist()
+
+        detection_data.append([
+            object_name,
+            round(confidence, 2),
+            round(x1, 2),
+            round(y1, 2),
+            round(x2, 2),
+            round(y2, 2)
+        ])
 
         df = pd.DataFrame(
             detection_data,
